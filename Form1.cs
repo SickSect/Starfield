@@ -22,16 +22,47 @@ namespace Starfield
 
         private  Star[] stars = new Star[15000];
         private Random rnd = new Random();
-        private Graphics grp;
+        private Graphics grp; //GDI
 
         public Form1()
         {
             InitializeComponent();
         }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            grp.Clear(Color.Black); // очищаем окно и красим в черный
+            foreach (Star star in stars)
+            {
+                Draw_star(star);
+                Mode_star(star);
+            }
+            pictureBox1.Refresh(); // обновляем бокс
+        }
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Mode_star(Star star)
+        {
+            star.z -= 100;
+            if (star.z < 1)
+            {
+                star.x = rnd.Next(-pictureBox1.Width, pictureBox1.Width);
+                star.y = rnd.Next(-pictureBox1.Height, pictureBox1.Height);
+                star.z = rnd.Next(1, pictureBox1.Width);
+            }
+               
+        }
+
+        private void Draw_star(Star star)
+        {
+            float s_size = map(star.z, 0, pictureBox1.Width, 10, 0);
+            float x = map(star.x / star.z, 0, 1, 0, pictureBox1.Width) + pictureBox1.Width / 2;
+            float y = map(star.y / star.z, 0, 1, 0, pictureBox1.Height) + pictureBox1.Height / 2;
+            grp.FillEllipse(Brushes.GreenYellow, x, y, s_size, s_size);
         }
 
         private float map(float n, float start1, float stop1, float start2, float stop2)
